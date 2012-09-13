@@ -763,16 +763,13 @@ int march_solve_rec()
 	{
 #ifdef LOCAL_AUTARKY
 	    int _depth;
-	
+
 	    _depth = analyze_autarky();
 	    if( _depth == 0 )
 	        printf("c global autarky found at depth %i\n", depth );
 	    else if( _depth != depth )
 	        printf("c autarky found at depth %i (from %i)\n", depth, _depth );
 #endif
-
-	    printf("c node %i @ depth %i\n", nodeCount, depth );
-
 //	    if( PreselectAll() == 0 )
 //		    return verifySolution();
 
