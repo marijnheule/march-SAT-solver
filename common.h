@@ -57,8 +57,6 @@
 /* array's */
 #define INITIAL_ARRAY_SIZE	4
 
-#define NO_TRANSLATOR
-
 //#define COMPLEXDIFF
 
 //#define EQ

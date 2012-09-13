@@ -76,9 +76,9 @@ void init_equivalence()
 
         for( i = 0; i < 2 * nrofclauses; i++ ) CeqDepends[ i ] = 0;
 
-	eq_found = (int*) malloc( sizeof(int) * original_nrofvars );
+	eq_found = (int*) malloc( sizeof(int) * nrofvars );
 
-	for( i = 0; i < original_nrofvars; i++ )
+	for( i = 0; i < nrofvars; i++ )
 		eq_found[ i ] = 0;
 }
 
@@ -1205,7 +1205,7 @@ void printCeq()
 
 	    if( CeqSizes[ i ] != 0 )
 	    	printf("%i ( %i ): %i [%i]", i, CeqDepends[ i ], Ceq[ i ][ 0 ], timeAssignments[ Ceq[i][0] ] );
-	    else 
+	    else
 		printf("%i (%i ): TRUE ", i, CeqDepends[ i ] );
 
             for( j = 1; j < CeqSizes[ i ]; j++ )
@@ -1218,7 +1218,7 @@ void printNrofEq()
 {
 	int i;
 
-	for( i = 0; i < original_nrofvars; i++ )
+	for( i = 0; i < nrofvars; i++ )
 	    if( eq_found[ i ] > 0 )
 		printf("c find_equivalence():: found %i %i-equivalences\n", eq_found[ i ], i );
 
@@ -1226,7 +1226,7 @@ void printNrofEq()
 
 	free( eq_found );
 }
-		
+
 void check_integrety()
 {
 	int i;

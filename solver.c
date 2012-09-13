@@ -1142,7 +1142,6 @@ inline void reduce_big_occurences( const int clause_index, const int nrval )
 #ifdef HIDIFF
 	HiRemoveClause( clause_index );
 #endif
-#ifdef NO_TRANSLATOR
 	int *clauseSet, index;
 	int *literals = clause_list[ clause_index ], lit;
 	while( *literals != LAST_LITERAL )
@@ -1165,7 +1164,6 @@ inline void reduce_big_occurences( const int clause_index, const int nrval )
 	    }
 	    big_occ[ lit ]--;
 	}
-#endif
 }
 
 inline int DPLL_update_datastructures( const int nrval )
@@ -1710,7 +1708,6 @@ inline void restore_big_occurences( const int clause_index, const int nrval )
 #ifdef HIDIFF
 	HiAddClause( clause_index );
 #endif
-#ifdef NO_TRANSLATOR
 	int *literals = clause_list[ clause_index ], lit;
 	while( *literals != LAST_LITERAL )
 	{
@@ -1719,7 +1716,6 @@ inline void restore_big_occurences( const int clause_index, const int nrval )
 	        clause_set[ lit ][ big_occ[ lit ] ] = clause_index;
 	    big_occ[ lit ]++;
 	}
-#endif
 }
 
 void restore_implication_arrays( const int nrval )

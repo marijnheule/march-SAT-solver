@@ -107,9 +107,6 @@ int main( int argc, char** argv )
 #endif
         if( kSAT_flag )         allocate_big_clauses_datastructures();
 
-//	TransformFormula();
-//	printf( "c main():: clause / variable ratio: ( %i / %i ) = %.2f\n", nrofclauses, nrofvars, (double) nrofclauses / nrofvars );
-
 	depth                 = 0;   // naar solver.c ?
         nodeCount             = 0;
         lookAheadCount        = 0;
@@ -128,7 +125,7 @@ int main( int argc, char** argv )
 #endif
 #ifdef DISTRIBUTION
 		result = distribution_branching();
-#else  
+#else
 #ifdef SUPER_LINEAR
 		result = super_linear_branching();
 #else
@@ -177,7 +174,7 @@ int main( int argc, char** argv )
 		printf( "c main():: SOLUTION VERIFIED :-)\n" );
 		printf( "s SATISFIABLE\n" );
 #ifndef COUNT_SAT
-		printSolution( original_nrofvars );
+		printSolution( nrofvars );
 #endif
 		exitcode = EXIT_CODE_SAT;
 		break;

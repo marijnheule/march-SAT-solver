@@ -298,7 +298,6 @@ inline int DL_fix_3SAT_clauses( const int nrval )
 
 inline int DL_fix_kSAT_clauses( const int nrval )
 {
-#ifdef NO_TRANSLATOR
         int lit, *literals;
         int clause_index;
 
@@ -312,7 +311,7 @@ inline int DL_fix_kSAT_clauses( const int nrval )
 //	    mask = clauseMask[ *(clauseSet++) ];
 //	    if( mask == 0 ) return UNSAT;
 //	    if( mask <= (SIZE_MASK << 1) )
-		
+
             clause_length[ clause_index ]--;
 
             if( clause_length[ clause_index ] <= 1 )
@@ -337,7 +336,6 @@ inline int DL_fix_kSAT_clauses( const int nrval )
             }
             DL_next_clause:;
         }
-#endif
         return SAT;
 }
 

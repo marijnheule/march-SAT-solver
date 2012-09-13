@@ -82,7 +82,6 @@ int lookahead()
 
 void init_lookahead()
 {
-#ifdef NO_TRANSLATOR
 	int i, longest_clause = 0;  //dient goed geinit worden
 
         for( i = 0; i < nrofclauses; i++ )
@@ -97,7 +96,7 @@ void init_lookahead()
 
 	for( i = 2; i < longest_clause; i++ )
 	    size_diff[ i ] = pow(5.0, 2-i);
-#endif
+
 	currentTimeStamp = 0;
 
         lookaheadArray = (int*) malloc( sizeof( int ) * 2 * nrofvars );
@@ -179,10 +178,8 @@ void dispose_lookahead()
 {
 	dispose_tree();
 	FREE( treeArray );
-
-#ifdef NO_TRANSLATOR
 	FREE( size_diff );
-#endif
+
 #ifdef EQ
 	FREE( lengthWeight );
 #endif
@@ -456,7 +453,6 @@ inline int look_fix_ternary_implications( const int nrval )
 
 inline int look_fix_big_clauses( const int nrval )
 {
-#ifdef NO_TRANSLATOR
 	int lit, *literals;
 	int clause_index;
 
@@ -496,7 +492,6 @@ inline int look_fix_big_clauses( const int nrval )
 	}
 #ifdef HIDIFF
 	weighted_new_binaries += hiSum[ -nrval ];
-#endif
 #endif
 #ifdef EVAL_VAR
 	    new_binaries++;
@@ -1122,15 +1117,12 @@ int get_signedBranchVariable()
 #ifdef GLOBAL_AUTARKY
     only_reduced_variables_flag = 1;
     do
-    {	
+    {
 #endif
         for( i = 0; i < lookaheadArrayLength; i++ )
         {
            varnr = lookaheadArray[ i ];
 
-#ifndef NO_TRANSLATION	   
-	   if( varnr > original_nrofvars ) continue;  //WAAROM HIER?
-#endif
 	   if( (only_reduced_variables_flag == 1) &&
 	       (VeqDepends[ varnr ] == EQUIVALENT) ) continue;
 
