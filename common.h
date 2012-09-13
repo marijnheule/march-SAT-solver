@@ -46,8 +46,6 @@
   #define CUT_OFF   		12
 #endif
 
-//#define LONG_LOOK
-
 //#define RESOLVENTLOOK
 
 //#define DISTRIBUTION
@@ -404,9 +402,6 @@ int dist_acc_flag;
 int *literal_list, **clause_list, *clause_length, **clause_set, *clause_database, *big_occ;
 int nrofbigclauses;
 
-#ifdef LONG_LOOK
-int ll_conflicts;
-#endif
 #ifdef DISTRIBUTION
 int target_rights, current_rights;
 #ifdef CUT_OFF

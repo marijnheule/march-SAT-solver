@@ -1,4 +1,4 @@
-/* 
+/*
    MARCH Satisfiability Solver
    Copyright (C) 2001-2005 M.J.H. Heule, J.E. van Zwieten, and M. Dufour.
    Copyright (C) 2005-2011 M.J.H. Heule.
@@ -165,9 +165,6 @@ int main( int argc, char** argv )
 //		100.0 * dl_actual_counter / (double) dl_possibility_counter );
 // 	printf( "c main():: doublelook: succesrate: %.3f, average DL_trigger: %.3f\n", 100.0 - 
 //		(100.0 * doublelook_failed / doublelook_count), DL_trigger_sum / doublelook_count );
-#endif
-#ifdef LONG_LOOK
-	printf("c marin():: longlook conflicts #: %i\n", ll_conflicts );
 #endif
 #ifdef COUNT_SAT 
 	printf( "c main():: found %i solutions\n", count_sat );
