@@ -1,0 +1,10 @@
+for file in *.c
+do 
+   echo $file
+   cat $file | grep $1
+done
+for file in *.h
+do 
+   echo $file
+   cat $file | grep $1
+done
