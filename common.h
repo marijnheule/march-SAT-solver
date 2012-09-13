@@ -164,7 +164,6 @@
 
 #define BIMP_START(__a)			(BinaryImp[  __a ] + 2)
 #define BIMP_ELEMENTS			(bImp[ -2 ] - 1)
-#define BIMP_SET_ELEMENTS(__a)		(bImp[ -2 ] = _a + 1)
 
 #ifdef OPPOSITE_DIRECTION
   #define TOP_OF_TREE           ( target_rights > current_rights )
