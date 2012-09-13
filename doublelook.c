@@ -71,19 +71,18 @@ int doublelook( int nrval, int offset )
 	doublelook_count++;
 
 	DL_MAX_Stamp      = currentTimeStamp + offset;
-	currentTimeStamp  = DL_MAX_Stamp; 
+	currentTimeStamp  = DL_MAX_Stamp;
 
 	if( kSAT_flag )
 	    look_backtrack();
 
 	local_stackp = end_fixstackp;
 
-	look_fix_binary_implications( nrval, 0 );	
-
+	look_fix_binary_implications( nrval );
 	if( kSAT_flag )
-	    DL_IUP( local_stackp );	
+	    DL_IUP( local_stackp );
 
-	currentTimeStamp -= offset; 
+	currentTimeStamp -= offset;
 
 	doublelook_fixstackp = end_fixstackp;
 	doublelook_resstackp = look_resstack;
@@ -262,12 +261,12 @@ int DL_IFIUP( const int nrval )
         local_fixstackp = end_fixstackp;
 	look_resstackp  = doublelook_resstackp;
 
-	if( look_fix_binary_implications( nrval, 0 ) == UNSAT ) 
+	if( look_fix_binary_implications( nrval ) == UNSAT )
 	{
 	    end_fixstackp = local_fixstackp;
 	    return UNSAT;
 	}
-	
+
 	return DL_IUP( local_fixstackp );
 }
 
@@ -288,11 +287,11 @@ inline int DL_fix_3SAT_clauses( const int nrval )
 		    if( IS_FIXED(lit2) )
 		    {    if( FIXED_ON_COMPLEMENT(lit2) )		   return UNSAT; }
 		    else
-		    {    if( look_fix_binary_implications(lit2, 0) == UNSAT ) return UNSAT; }
+		    {    if( look_fix_binary_implications(lit2) == UNSAT ) return UNSAT; }
 		}
 	    }
 	    else if( (IS_FIXED(lit2)) && (FIXED_ON_COMPLEMENT(lit2)) )
-	    {	         if( look_fix_binary_implications(lit1, 0) == UNSAT ) return UNSAT; }
+	    {	         if( look_fix_binary_implications(lit1) == UNSAT ) return UNSAT; }
 	}
 	return SAT;
 }
@@ -324,7 +323,7 @@ inline int DL_fix_kSAT_clauses( const int nrval )
                     lit = *(literals)++;
                     if( IS_NOT_FIXED( lit ) )
                     {
-                        if( look_fix_binary_implications( lit, 0 ) == SAT )
+                        if( look_fix_binary_implications( lit ) == SAT )
 			    goto DL_next_clause;
 			break;
                     }
@@ -369,7 +368,7 @@ inline int DL_fix_equivalences( const int nrval )
 
             if( var )
             {
-                if( look_fix_binary_implications( var * value * CeqValues[ ceqidx ], 0 ) == UNSAT ) 
+                if( look_fix_binary_implications( var * value * CeqValues[ ceqidx ] ) == UNSAT ) 
 		    return UNSAT;
             }
 	    else if( value == -CeqValues[ ceqidx ] )

@@ -1113,7 +1113,7 @@ int IFIUP( const int nrval, const int forced_or_branch_flag )
 	{
 	   get_forced_literals( &_forced_literal_array, &_forced_literals );
 	   for( i = 0; i < _forced_literals; i++ )
-	      	if( look_fix_binary_implications(*(_forced_literal_array++), 0) == UNSAT ) 
+	      	if( look_fix_binary_implications(*(_forced_literal_array++)) == UNSAT )
 		    { MainDead( local_fixstackp ); return UNSAT; }
 	}
 #ifdef DISTRIBUTION
@@ -1121,18 +1121,18 @@ int IFIUP( const int nrval, const int forced_or_branch_flag )
 	{
 	   get_recorded_literals( &_forced_literal_array, &_forced_literals );
 	   for( i = 0; i < _forced_literals; i++ )
-	      	if( look_fix_binary_implications(*(_forced_literal_array++), 0) == UNSAT ) 
+	      	if( look_fix_binary_implications(*(_forced_literal_array++)) == UNSAT )
 		    { MainDead( local_fixstackp ); return UNSAT; }
 	}
 #endif
 	else
 	{
-	 	if( look_fix_binary_implications( nrval, 0 ) == UNSAT ) 	
+	 	if( look_fix_binary_implications( nrval ) == UNSAT )
     		    { MainDead( local_fixstackp ); return UNSAT; }
 	}
 
 	while( local_fixstackp < end_fixstackp )
-		if( DPLL_update_datastructures(*(local_fixstackp++)) == UNSAT ) 	
+		if( DPLL_update_datastructures(*(local_fixstackp++)) == UNSAT )
 		    { MainDead( local_fixstackp ); return UNSAT; }
 
 	rstackp = end_fixstackp;
@@ -1347,14 +1347,14 @@ inline int DPLL_update_datastructures( const int nrval )
                             if( first_lit == 0 ) first_lit = lit;
                             else
 			    {
-				UNSAT_flag = !DPLL_add_binary_implications( first_lit, lit ); 
+				UNSAT_flag = !DPLL_add_binary_implications( first_lit, lit );
 				goto next_clause;
 			    }
                         }
                         else if( !FIXED_ON_COMPLEMENT(lit) ) goto next_clause;
                     }
 
-                    if( first_lit != 0 )  UNSAT_flag = !look_fix_binary_implications( first_lit, 0 );
+                    if( first_lit != 0 )  UNSAT_flag = !look_fix_binary_implications( first_lit );
                     else                  UNSAT_flag = 1;
                 }
                 next_clause:;
@@ -1391,7 +1391,7 @@ inline int DPLL_update_datastructures( const int nrval )
 	    }
 	    else if( CeqSizes[ ceqidx ] == 1 )
             {
-            	if( look_fix_binary_implications(Ceq[ceqidx][0]*CeqValues[ceqidx], 0) == UNSAT )
+            	if( look_fix_binary_implications(Ceq[ceqidx][0] * CeqValues[ceqidx]) == UNSAT )
                     return UNSAT;
             }
         }
@@ -1466,9 +1466,9 @@ int DPLL_propagate_binary_equivalence( const int bieq )
                             return UNSAT;
 
                     if( CeqSizes[ ceqsubst ] == 1 )
-                      	if( !look_fix_binary_implications(Ceq[ceqsubst][0] * CeqValues[ceqsubst], 0) )
+                      	if( !look_fix_binary_implications(Ceq[ceqsubst][0] * CeqValues[ceqsubst]) )
                     	    return UNSAT;
-	
+
                     if( CeqSizes[ ceqsubst ] == 2 )
                      	PUSH( newbi, ceqsubst );
 
@@ -1494,11 +1494,11 @@ inline int DPLL_add_compensation_resolvents( const int lit1, const int lit2 )
 
 	for (i = BIMP_ELEMENTS; --i; )
 	{
-	    lit = *(bImp++); 
+	    lit = *(bImp++);
 	    if( IS_FIXED(lit) ) continue;
 
-	    if( bImp_stamps[ -lit ] == current_bImp_stamp )	
-		return look_fix_binary_implications( lit1, 0 );
+	    if( bImp_stamps[ -lit ] == current_bImp_stamp )
+		return look_fix_binary_implications( lit1 );
 #ifdef COMPENSATION_RESOLVENTS
 	    if( bImp_stamps[ lit ] != current_bImp_stamp )
 	    {
@@ -1518,32 +1518,32 @@ int DPLL_add_binary_implications( int lit1, int lit2 )
 	if( IS_FIXED(lit1) )
 	{
 	    if( !FIXED_ON_COMPLEMENT(lit1) )	return SAT;
-	    else if( IS_FIXED(lit2) )	
+	    else if( IS_FIXED(lit2) )
 		    return( !FIXED_ON_COMPLEMENT(lit2) );
-	    else    return look_fix_binary_implications(lit2, 0);
+	    else    return look_fix_binary_implications(lit2);
 	}
 	else if( IS_FIXED(lit2) )
 	{
 	    if( !FIXED_ON_COMPLEMENT(lit2) )	return SAT;
-	    else    return look_fix_binary_implications(lit1, 0);
+	    else    return look_fix_binary_implications(lit1);
 	}
-	
+
 #ifdef BIEQ
-	while( (VeqDepends[ NR(lit1) ] != INDEPENDENT) && 
+	while( (VeqDepends[ NR(lit1) ] != INDEPENDENT) &&
 	    (VeqDepends[ NR(lit1) ] != EQUIVALENT) )
 		lit1 = VeqDepends[ NR(lit1) ] * SGN(lit1);
 
-	while( (VeqDepends[ NR(lit2) ] != INDEPENDENT) && 
+	while( (VeqDepends[ NR(lit2) ] != INDEPENDENT) &&
 	    (VeqDepends[ NR(lit2) ] != EQUIVALENT) )
 		lit2 = VeqDepends[ NR(lit2) ] * SGN(lit2);
 
 	if( lit1 == -lit2 ) return SAT;
-	if( lit1 ==  lit2 ) return look_fix_binary_implications(lit1, 0);
+	if( lit1 ==  lit2 ) return look_fix_binary_implications(lit1);
 #endif
 
 	STAMP_IMPLICATIONS( -lit1 );
 	if( bImp_stamps[ -lit2 ] == current_bImp_stamp )
-	    return look_fix_binary_implications( lit1, 0 );
+	    return look_fix_binary_implications( lit1 );
 	if( bImp_stamps[lit2] != current_bImp_stamp )
 	{
 	    int _result;
@@ -1551,12 +1551,12 @@ int DPLL_add_binary_implications( int lit1, int lit2 )
 	    bImp_stamps[ BinaryImp[-lit1][ BinaryImp[-lit1][0] - 1] ] = current_bImp_stamp;
 
 	    _result = DPLL_add_compensation_resolvents( lit1, lit2 );
-	    if( _result != UNKNOWN ) 
+	    if( _result != UNKNOWN )
 		return _result;
-	 
-	    STAMP_IMPLICATIONS( -lit2 ); 
+
+	    STAMP_IMPLICATIONS( -lit2 );
 	    if( bImp_stamps[ -lit1 ] == current_bImp_stamp )
-	    	return look_fix_binary_implications( lit2, 0 );
+	    	return look_fix_binary_implications( lit2 );
 
 	    _result = DPLL_add_compensation_resolvents( lit2, lit1 );
 	    if( _result != UNKNOWN ) 

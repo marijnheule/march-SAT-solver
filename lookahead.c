@@ -52,8 +52,6 @@ float *EqDiff;
 
 int trd_stamp, *trd_double, *trd_dsc, *trd_fin;
 int dom_stamp, *dom_stamps;
-int *reason;
-
 
 int (*look_IUP        ) ( const int nrval, int *local_fixstackp );
 int look_IUP_w_eq_3SAT  ( const int nrval, int *local_fixstackp );
@@ -121,9 +119,7 @@ void init_lookahead()
 	MALLOC_OFFSET( NBCounter,       int, nrofvars,   0 );
 	MALLOC_OFFSET( WNBCounter,    float, nrofvars, 0.0 );
 	MALLOC_OFFSET( failed_DL_stamp, int, nrofvars,   0 );
-	MALLOC_OFFSET( reason,          int, nrofvars,   0 );
 	MALLOC_OFFSET( dom_stamps,          int, nrofvars,   0 );
-//	MALLOC_OFFSET( hyperTRD,        int, nrofvars,   0 );
 
 	dom_stamp = 0;
 
@@ -196,7 +192,6 @@ void dispose_lookahead()
 	FREE_OFFSET( NBCounter       );
 	FREE_OFFSET( WNBCounter      );
 	FREE_OFFSET( failed_DL_stamp );
-	FREE_OFFSET( reason          );
 	FREE_OFFSET( dom_stamps      );
 
 	FREE( diff_table           );
@@ -359,7 +354,7 @@ int look_IFIUP( const int nrval, const int parent )
 	local_stackp   = end_fixstackp;
 	look_resstackp = look_resstack;
 
-	if( look_fix_binary_implications( nrval, 0 ) == UNSAT )
+	if( look_fix_binary_implications( nrval ) == UNSAT )
 	{
 	    end_fixstackp  = local_stackp;
 	    return UNSAT;
@@ -388,15 +383,13 @@ inline int look_ternary_to_binary_implications( const int nrval )
 	return SAT;
 }
 
-inline int look_fix_binary_implications( const int nrval, const int rsn )
+inline int look_fix_binary_implications( const int nrval )
 {
         int i, lit, tmp, *bImp, *local_fixstackp = end_fixstackp;
 
         if( IS_FIXED(nrval) )
 	    return( FIXED_ON_COMPLEMENT(nrval) == UNSAT );
 
-	reason[ nrval ] = rsn;
-//	printf("c assigning reason %i [%i] to %i\n", nrval, timeAssignments[ nrval ], rsn );
 	FIX( nrval, currentTimeStamp );
         *( end_fixstackp++ ) = nrval;
 
@@ -412,8 +405,6 @@ inline int look_fix_binary_implications( const int nrval, const int rsn )
 	    	{    if( FIXED_ON_COMPLEMENT(lit) ) return UNSAT; }
 	    	else
 	    	{
-		    reason[ lit ] = tmp;
-//		    printf("c assigning reason %i [%i] to %i\n", lit, timeAssignments[lit], tmp );
 		    FIX( lit, currentTimeStamp );
         	    *( end_fixstackp++ ) = lit;   }
 	    }
@@ -441,13 +432,13 @@ inline int look_fix_ternary_implications( const int nrval )
 		    {
 			if( FIXED_ON_COMPLEMENT(lit2) ) 	 return UNSAT;
 		    }
-		    else if( add_hyper_binary( lit2, get_dominator( lit2, nrval, -lit1 ) ) == UNSAT ) return UNSAT;
+		    else if( add_hyper_binary( lit2, 0  ) == UNSAT ) return UNSAT;
 	   	}
 	    }
 	    else if( IS_FIXED(lit2) )
 	    {
 	   	if( FIXED_ON_COMPLEMENT(lit2) )
-   		    if( add_hyper_binary( lit1, get_dominator( lit1, nrval, -lit2 ) ) == UNSAT )     return UNSAT; 
+   		    if( add_hyper_binary( lit1, 0 ) == UNSAT )     return UNSAT; 
 	    }
 	    else
 	    {
@@ -576,42 +567,6 @@ inline int look_fix_equivalences( const int nrval )
 }
 #endif
 
-int get_dominator( const int nrval, int lit1, int lit2 )
-{
-	return 0;
-
-	int tmp1 = lit1;
-	int tmp2 = lit2;
-
-	if( IS_FORCED( lit1 ) ) return lit2;
-	if( IS_FORCED( lit2 ) ) return lit1;
-
-	dom_stamp++;
-
-	do
-	{
-	    dom_stamps[ lit1 ] = dom_stamp;
-	    lit1 = reason[ lit1 ];
-	}
-	while( lit1 != 0 );
-
-	do
-	{
-	    if( dom_stamps[ lit2 ] == dom_stamp )
-	    {
-		reason[ nrval ] = lit2;
-		return lit2;
-	    }
-	    lit2 = reason[ lit2 ];
-	}
-	while( lit2 != 0 );
-
-
-	printf("c error no dominator %i [%i] %i [%i] %i [%i] *%i*\n", nrval, timeAssignments[ nrval ], tmp1, timeAssignments[ tmp1 ],  tmp2, timeAssignments[ tmp2 ], currentTimeStamp  );
-
-	return 0;
-}
-
 inline int add_hyper_binary( const int nrval, const int dominator )
 {
 #ifdef ADD_HYPER_BINARIES
@@ -620,7 +575,7 @@ inline int add_hyper_binary( const int nrval, const int dominator )
 	printf("c found hyper binary resolvent %i in node %i with literal %i\n", hyper_bins, nodeCount, nrval );
         *( look_resstackp++ ) = nrval;
 #endif
-	return look_fix_binary_implications( nrval, dominator );
+	return look_fix_binary_implications( nrval );
 }
 
 inline void add_resolvents( const int nrval )
@@ -1063,21 +1018,6 @@ int treelookvar( const int nrval )
 	{
 	    NBCounter [ nrval  ] = NBCounter [ parent ];
             WNBCounter[ nrval  ] = WNBCounter[ parent ];
-
-	    int focus = parent;
-
-	    while( reason[ focus ] != 0 ) focus = reason[ focus ];
-
-//	    if( reason[ parent ] != 0 && reason[ reason [ parent ] ] == 0 ) printf("ERROR\n");
-
-	    if( IS_NOT_FIXED( nrval ) )
-	    {
-
-	       reason    [ focus ] = nrval;
-//	       reason    [ parent ] = nrval;
-	       reason    [ nrval  ] = 0;
-//	       printf("c assiging parent reason[ %i ] = %i\n", parent, nrval );
-	    }
 	}
 	else
 	{
@@ -1088,7 +1028,7 @@ int treelookvar( const int nrval )
 
         if( IS_FIXED(nrval) )
 	{
-	    if (IS_FORCED(nrval) )	
+	    if (IS_FORCED(nrval) )
 		return SAT;
 	    if( FIXED_ON_COMPLEMENT(nrval) )
 	    {

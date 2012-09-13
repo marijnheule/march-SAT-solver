@@ -18,10 +18,9 @@ int lookahead();
        int look_fix_forced_literal	( const int nrval );
 
 inline int look_fix_big_clauses         ( const int nrval );
-inline int look_fix_binary_implications	( const int nrval, const int rsn );
+inline int look_fix_binary_implications	( const int nrval );
 inline int look_fix_equivalences	( const int nrval );
 inline int look_fix_ternary_implications( const int nrval );
-       int get_dominator	        ( const int nrval, const int lit1, const int lit2 );
 inline int add_hyper_binary	( const int nrval, const int dominator );
 inline void add_resolvents		(		  );
 
