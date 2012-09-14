@@ -934,8 +934,7 @@ int tree_lookahead()
 
 	    if( (depth == 0) && (lastChanged != 0) )
 	    {
-//		clean_bImp();
-	        if( treebased_lookahead() == UNSAT )	   
+	        if( treebased_lookahead() == UNSAT )
 		  return UNSAT;
 	    }
         }
@@ -946,24 +945,10 @@ int tree_lookahead()
         return SAT;
 }
 
-inline void look_add_autarky_binary_implications( const int parent, const int nrval )
-{
-	int i, *bImp = BIMP_START(-nrval); 
-
-	for( i = BIMP_ELEMENTS; --i; )
-	    if( *(bImp++) == parent )
-		return;
-
-	CHECK_BIMP_BOUND  ( -nrval );
-	CHECK_BIMP_BOUND  ( parent );
-	CHECK_NODE_STAMP( -nrval );
-	CHECK_NODE_STAMP( parent );
-	ADD_BINARY_IMPLICATIONS( -parent, nrval );
-}
 #ifdef DOUBLELOOK
 int check_doublelook( const int nrval )
 {
-	if( failed_DL_stamp[ nrval ] != nodeCount )  
+	if( failed_DL_stamp[ nrval ] != nodeCount )
 	{
 #ifdef PLOT
 	    sum_plot  += DL_trigger;
@@ -986,7 +971,7 @@ int check_doublelook( const int nrval )
 #ifdef DL_DECREASE
 		DL_trigger = WNBCounter[ nrval ];
 //		DL_trigger =  NBCounter[ nrval ];
-#endif		    
+#endif
 		failed_DL_stamp[nrval] = nodeCount;
 	    }
 #ifdef DL_DECREASE
@@ -1029,10 +1014,6 @@ int treelookvar( const int nrval )
 	    {
 	    	return look_fix_forced_literal(-nrval);
 	    }
-
-#ifdef AUTARKY
-	    look_add_autarky_binary_implications( parent, nrval );
-#endif
 	    return SAT;
 	}
 
@@ -1046,17 +1027,6 @@ int treelookvar( const int nrval )
 
 #ifdef DOUBLELOOK
 	if( check_doublelook( nrval ) == UNSAT )  return UNSAT;
-#endif
-#ifdef AUTARKY
-	if( new_binaries == 0 )
-	{
-	    if( (parent == 0) || IS_FORCED(parent) )
-	    {
-		look_fix_forced_literal( nrval );
-		return SAT;
-	    }
-	    look_add_autarky_binary_implications( parent, nrval );
-	}
 #endif
 	loc = BinaryImp[ -nrval ];
         for( i = 2; i < loc[ 0 ]; i++ )
@@ -1172,15 +1142,9 @@ int get_signedBranchVariable()
 
 //	bias = left / right + right / left - 1.0;
 
-//	if( bias > 6 ) maxDiffSide *= -1;			
+//	if( bias > 6 ) maxDiffSide *= -1;
     }
 #endif
-//	maxDiffSide *= -1;			
-
-//	printf("secelted %i at %i with diff %i\n", maxDiffVar * maxDiffSide, nodeCount, (int) maxDiffScore );
-
-//	maxDiffSide *= -1;			
-	
         return maxDiffVar * maxDiffSide;
 }
 
@@ -1237,9 +1201,9 @@ int serial_lookahead()
 			    return UNSAT; }
 							lastChanged = varnr; continue; }
 #ifdef AUTARKY
-		    if( new_binaries == 0 ) { look_fix_forced_literal(nrval);	 
+		    if( new_binaries == 0 ) { look_fix_forced_literal(nrval);
 							lastChanged = varnr; continue; }
-#endif	
+#endif
 		    NBCounter [ nrval ] = new_binaries;
 		    WNBCounter[ nrval ] = weighted_new_binaries;
 #ifdef DOUBLELOOK
@@ -1255,7 +1219,7 @@ int serial_lookahead()
 			    necessary_assignments++;
 			    if( look_fix_forced_literal(imp) == UNSAT ){
 			        if( depth == 0 ) printf("c found %i NHBRs\n", hyper_bins );
-			        return UNSAT;			
+			        return UNSAT;
 			    }
 		        }
 		    }
@@ -1352,8 +1316,8 @@ void ternarylook_detect_hyper_binaries( const int lit1, const int lit2 )
 
 	    CHECK_BIMP_BOUND( lit1 );
 	    CHECK_BIMP_BOUND( lit2 );
-	    BinaryImp[ lit1 ][ ( BinaryImp[ lit1 ][ 0 ] )++ ] = -lit2; 
-	    BinaryImp[ lit2 ][ ( BinaryImp[ lit2 ][ 0 ] )++ ] = -lit1; 
+	    BinaryImp[ lit1 ][ ( BinaryImp[ lit1 ][ 0 ] )++ ] = -lit2;
+	    BinaryImp[ lit2 ][ ( BinaryImp[ lit2 ][ 0 ] )++ ] = -lit1;
 
 	    Cv                = (int**) realloc( Cv,      sizeof( int*) * ( nrofclauses + 1 ) );
 	    Cv[ nrofclauses ] = (int* ) malloc ( sizeof(int) * 3);
@@ -1408,7 +1372,7 @@ int ternarylook_add_hyper_binaries( const int lit1, const int lit2 )
 		if( tmpTernaryImpSize[ clause[i] ] <= (2 * TernaryImpSize[ clause[i] ])  )
 		{
 	 	    tmpTernaryImpSize[ clause[i] ] *= 2;
-		    TernaryImp[ clause[i] ] = (int*) realloc( TernaryImp[ clause[i] ], 
+		    TernaryImp[ clause[i] ] = (int*) realloc( TernaryImp[ clause[i] ],
  				sizeof(int) * (2 * tmpTernaryImpSize[ clause[i] ]+2) );
 		}
 	    }
@@ -1445,7 +1409,7 @@ void ComputeDiffWeights( )
 	{
             for( i = freevars - 1; i >= 0; i-- )
             {
-	        sum = 0.0; 
+	        sum = 0.0;
             	index = freevarsArray[ i ];
 		if( Veq[ index ][ 0 ] > 1 )
 		    for( j = Veq[ index ][ 0 ] - 1; j > 0; j-- )
@@ -1455,17 +1419,17 @@ void ComputeDiffWeights( )
 		EqDiff[ -index ] = sum + Reductions[ -index ];
 	    }
 	}
-	else 
+	else
 #endif
-	if( (non_tautological_equivalences == 0 ) && (kSAT_flag == 0) && 
+	if( (non_tautological_equivalences == 0 ) && (kSAT_flag == 0) &&
 		(depth > ROOTSIZE) && (depth <= RECORDSIZE) )
-	{   
-	    diff = diff_depth[ depth - 1 ]; 
+	{
+	    diff = diff_depth[ depth - 1 ];
 	    sum  = 2.0 * freevars;
 	}
-	else 
+	else
 	{
-	    sum = 0.0; 
+	    sum = 0.0;
             for( i = freevars - 1; i >= 0; i-- )
             {
          	index = freevarsArray[ i ];
@@ -1497,9 +1461,9 @@ void ComputeDiffWeights( )
 		}
 		else
 		{
-	            pos = 0.1 + (Reductions[ -index ] + 
+	            pos = 0.1 + (Reductions[ -index ] +
 			DIFF_WEIGHT * (BinaryImp[  index ][ 0 ] - bImp_satisfied[  index ]));
-	            neg = 0.1 + (Reductions[  index ] + 
+	            neg = 0.1 + (Reductions[  index ] +
 			DIFF_WEIGHT * (BinaryImp[ -index ][ 0 ] - bImp_satisfied[ -index ]));
 
 		    if( non_tautological_equivalences ) Rank[ index ] = 1024 * pos * neg + 1;
@@ -1517,7 +1481,7 @@ void ComputeDiffWeights( )
 	else			accuracy = ACCURACY;
 
     if( depth <= RECORDSIZE )
-    {	
+    {
 	while( iteration_count < (accuracy+ dist_acc_flag) )
 	{
 	    factor  = 2.0 * freevars / sum;
@@ -1540,8 +1504,6 @@ void ComputeDiffWeights( )
 	        {  if( IS_NOT_FIXED(*bImp) ) pos += diff_tmp[ *bImp ]; bImp++; }
 	    	pos *= wnorm;
 
-//		if( kSAT_flag) pos += EqDiff[ index ] + big_occ[  index ] / 2;
-//		else 
 		{ tImp = TernaryImp[ index ];
                 for( j = TernaryImpSize[ index ]; j > 0; j-- )
                 {  pos += diff_tmp[ tImp[0] ] * diff_tmp[ tImp[1] ]; tImp += 2;  } }
@@ -1551,8 +1513,6 @@ void ComputeDiffWeights( )
 	        {  if( IS_NOT_FIXED(*bImp) ) neg += diff_tmp[ *bImp ]; bImp++; }
 	        neg *= wnorm;
 
-//		if( kSAT_flag )	neg += EqDiff[ index ] + big_occ[ -index ] / 2;
-//		else 
 		{ tImp = TernaryImp[ -index ];
                 for( j = TernaryImpSize[ -index ]; j > 0; j-- )
                 {  neg += diff_tmp[ tImp[0] ] * diff_tmp[ tImp[1] ]; tImp += 2;  } }
@@ -1589,14 +1549,14 @@ void ComputeDiffWeights( )
 
 	    Rank[ index ] = 1024 * diff[ index ] * diff[ -index ];
 	}
-	
+
 	dist_acc_flag = 0;
-	
+
 	return;
 }
 
 void reset_lookahead_resstack_head( )
 {	*look_resstack = 0; }
-                                                                                                                             
+
 int get_lookahead_resstack_head( )
 {	return *look_resstack != 0; }

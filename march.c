@@ -30,11 +30,11 @@ void handleUNSAT()
 #ifdef TRELOS
 	outputUnsat ();
 #endif
-#ifndef CUBE 
+#ifndef CUBE
        	printf( "s UNSATISFIABLE\n" );
 #else
 	printUNSAT();
-#endif	
+#endif
 	disposeFormula();
 
 	exit( EXIT_CODE_UNSAT);
@@ -150,18 +150,18 @@ int main( int argc, char** argv )
 //	printf( "c ratio assigned : freevars = %i %i\n", assigned_th, part_free ); 
 	printf( "c final cutoff: %.4f * %i\n", factor_th, part_free ); 
 #endif
-//	printf( "c main():: dead ends in main: %i\n", mainDead );
-//	printf( "c main():: lookAheadCount: %i\n", lookAheadCount );
-//      printf( "c main():: unitResolveCount: %i\n", unitResolveCount );
+	printf( "c main():: dead ends in main: %i\n", mainDead );
+	printf( "c main():: lookAheadCount: %i\n", lookAheadCount );
+      	printf( "c main():: unitResolveCount: %i\n", unitResolveCount );
         printf( "c time = %.2f seconds\n", ((float)(clock()))/CLOCKS_PER_SEC );
-//	printf( "c main():: necessary_assignments: %i\n", necessary_assignments );
-//	printf( "c main():: bin_sat: %i, bin_unsat %i\n", bin_sat, bin_unsat );
+	printf( "c main():: necessary_assignments: %i\n", necessary_assignments );
+	printf( "c main():: bin_sat: %i, bin_unsat %i\n", bin_sat, bin_unsat );
 #ifdef DOUBLELOOK
-//	printf( "c main():: doublelook: #: %d, succes #: %d\n", (int) doublelook_count, (int) (doublelook_count - doublelook_failed) );
-//	printf( "c main():: doublelook: overall %.3f of all possible doublelooks executed\n", 
-//		100.0 * dl_actual_counter / (double) dl_possibility_counter );
-// 	printf( "c main():: doublelook: succesrate: %.3f, average DL_trigger: %.3f\n", 100.0 - 
-//		(100.0 * doublelook_failed / doublelook_count), DL_trigger_sum / doublelook_count );
+	printf( "c main():: doublelook: #: %d, succes #: %d\n", (int) doublelook_count, (int) (doublelook_count - doublelook_failed) );
+	printf( "c main():: doublelook: overall %.3f of all possible doublelooks executed\n", 
+		100.0 * dl_actual_counter / (double) dl_possibility_counter );
+ 	printf( "c main():: doublelook: succesrate: %.3f, average DL_trigger: %.3f\n", 100.0 - 
+		(100.0 * doublelook_failed / doublelook_count), DL_trigger_sum / doublelook_count );
 #endif
 #ifdef COUNT_SAT 
 	printf( "c main():: found %i solutions\n", count_sat );

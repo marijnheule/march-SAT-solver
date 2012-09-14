@@ -405,7 +405,7 @@ int initSolver()
 	for( i = 0; i < nrofceq ; i++ )
 	    assert( CeqSizes[ i ] != 1 );
 #ifdef EQ
-	for( i = 0; i < nrofceq ; i++ )	
+	for( i = 0; i < nrofceq ; i++ )
 	    if( CeqSizes[ i ] == 2 )
             	DPLL_propagate_binary_equivalence( i );
 #endif
@@ -947,7 +947,7 @@ int march_solve_rec()
 	    for( i = 0; i < nrofbigclauses; ++i )
 	    {
 		clause_red_depth[ i ] = nrofvars;
-		clause_SAT_flag[ i ]  = 0;
+		clause_SAT_flag [ i ] = 0;
 	    }
 	  }
 
@@ -1226,7 +1226,7 @@ inline int DPLL_update_datastructures( const int nrval )
 	}
 	else
 	{
-	  int *clauseSet, clause_index; 
+	  int *clauseSet, clause_index;
 
 	  // REMOVE SATISFIED CLAUSES
 	  clauseSet = clause_set[ nrval ];
@@ -1235,10 +1235,10 @@ inline int DPLL_update_datastructures( const int nrval )
 	    clause_index = *(clauseSet++);
 
 	    // if clause is not satisfied
-	    if( clause_length[ clause_index ] < SAT_INCREASE - 2 )	
+	    if( clause_length[ clause_index ] < SAT_INCREASE - 2 )
 	    {
 #ifdef GLOBAL_AUTARKY
-		// if clause is already been reduced
+		// if clause has already been reduced
 		if( clause_reduction[ clause_index ] > 0 )
 		{
                     int *literals = clause_list[ clause_index ];
@@ -1265,6 +1265,7 @@ inline int DPLL_update_datastructures( const int nrval )
 		}
             }
 
+//	    if( clause_SAT_flag[ big_to_binary [nrval][i] ] == 0 )
 	    if( flag == 1 )
 	    {
 		clause_SAT_flag[  big_to_binary[ nrval ][ i ] ] = 1;
@@ -1275,10 +1276,9 @@ inline int DPLL_update_datastructures( const int nrval )
 	  }
 #endif
 	}
-	
 
 #ifdef GLOBAL_AUTARKY
-#ifdef EQ	
+#ifdef EQ
 	tmpEqImpSize[ nr ] = Veq[ nr ][ 0 ];
 	for( i = 1; i < Veq[ nr ][0]; i++ )
         {
@@ -1410,8 +1410,8 @@ inline void swap_ternary_implications( const int nrval, const int lit1, const in
 	for( i = last - 1; i >= 0; i-- )
 	    if( (tImp[ 2*i ] == lit1) && (tImp[ 2*i + 1 ] == lit2) )
 	    {
-	    	tImp[ 2*i     ] = tImp[ 2*last     ]; tImp[ 2*last     ] = lit1; 
-		tImp[ 2*i + 1 ] = tImp[ 2*last + 1 ]; tImp[ 2*last + 1 ] = lit2; 
+	    	tImp[ 2*i     ] = tImp[ 2*last     ]; tImp[ 2*last     ] = lit1;
+		tImp[ 2*i + 1 ] = tImp[ 2*last + 1 ]; tImp[ 2*last + 1 ] = lit2;
 		return;
 	    }
 }
@@ -1424,7 +1424,7 @@ void remove_satisfied_implications( const int nrval )
         {
             lit1 = *(tImp++);
             lit2 = *(tImp++);
-	    
+
 	    swap_ternary_implications( lit1, lit2, nrval );
 	    swap_ternary_implications( lit2, nrval, lit1 );
         }
@@ -1571,7 +1571,7 @@ int autarky_stamp( const int nrval )
 	{
 	    lit1 = *(tImp++);
 	    lit2 = *(tImp++);
-		
+
 	    if( IS_NOT_FIXED(lit1) && IS_NOT_FIXED(lit2) )
 	    {
 		flag = 1;
@@ -1609,7 +1609,7 @@ int analyze_autarky( )
 	_rstackp      = rstackp;
 	for( _depth = depth; _depth > 0; _depth-- )
 	{
-	  for( twice = 1 ; twice <= 2; twice++ )	    
+	  for( twice = 1 ; twice <= 2; twice++ )
 	    while( *(--_rstackp) != STACK_BLOCK )
 	    {
 		nrval = *(_rstackp);
@@ -1622,7 +1622,7 @@ int analyze_autarky( )
 		{
 		    lit1 = *(tImp++);
 		    lit2 = *(tImp++);
-		
+
 		    if( IS_NOT_FIXED(lit1) && IS_NOT_FIXED(lit2) )
 		    {
 			new_bImp_flag = 1;
@@ -1783,6 +1783,7 @@ void restore_implication_arrays( const int nrval )
 		}
             }
 
+//	    if (clause_SAT_flag[ big_to_binary[nrval][i] ] == 1)
 	    if( flag == 1 )
 	    {
 		clause_SAT_flag[ big_to_binary[ nrval ][ i ] ] = 0;
@@ -1821,7 +1822,7 @@ void restore_implication_arrays( const int nrval )
                 int *literals = clause_list[ clause_index ];
                 while( *literals != LAST_LITERAL )
 		    TernaryImpReduction[ *(literals++) ]--;
-		
+
 		clause_red_depth[ clause_index ] = nrofvars;
 	    }
 #endif
@@ -1876,10 +1877,10 @@ void restore_implication_arrays( const int nrval )
             bImp_satisfied[ -(*(bImp++)) ]--;
 
 	freevars++;
-#ifdef CUBE	
+#ifdef CUBE
 	nr_assigned--;
 #endif
-	UNFIX( nrval ); 
+	UNFIX( nrval );
 }
 
 int checkSolution( )
